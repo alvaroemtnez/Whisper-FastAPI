@@ -68,11 +68,27 @@ cd whisper-fastapi
 pip install -r requirements.txt
 ```
 
-You can then run the application using the following command: (model will be download from huggingface if not exists in cache dir)
+You can then run the application using the following command: (model will be downloaded from huggingface if not exists in cache dir)
 
 ```bash
 python whisper_fastapi.py --host 0.0.0.0 --port 5000 --model large-v2
 ```
+
+Available command-line options:
+- `--host`: Host address (default: `0.0.0.0`)
+- `--port`: Port (default: `5000`)
+- `--model`: Model size (default: `large-v3`)
+- `--device`: Device (`cpu`, `cuda`, `auto`)
+- `--compute_type`: Computation type (default: `default`)
+- `--threads`: CPU threads (default: `4`)
+
+**compute_type options:**
+- `default` - Use model's native precision
+- `auto` - Auto-select fastest type
+- `int8` - Faster, less memory
+- `float16` - Half precision (GPU)
+- `float32` - Full precision
+
 
 This will start the application on `http://<your-ip-address>:5000`.
 
