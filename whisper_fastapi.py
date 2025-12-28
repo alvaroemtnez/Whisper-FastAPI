@@ -63,6 +63,7 @@ parser.add_argument("--wyoming-uri", default="tcp://0.0.0.0:3001", type=str)
 parser.add_argument("--port", default=5000, type=int)
 parser.add_argument("--model", default="large-v3", type=str)
 parser.add_argument("--device", default="auto", type=str)
+parser.add_argument("--compute_type", default="default", type=str)
 parser.add_argument("--cache_dir", default=None, type=str)
 parser.add_argument("--local_files_only", default=False, type=bool)
 parser.add_argument("--threads", default=4, type=int)
@@ -88,6 +89,7 @@ print(f"Loading model to device {args.device}...")
 model = faster_whisper.WhisperModel(
     model_size_or_path=args.model,
     device=args.device,
+    compute_type=args.compute_type,
     cpu_threads=args.threads,
     local_files_only=args.local_files_only,
 )
