@@ -391,9 +391,8 @@ async def translateapi(
         "id": md5,
     }
 
-
-@app.post("/v1/audio/transcriptions", response_model=Union[JsonResult, str])
-@app.post("/v1/audio/translations", response_model=Union[JsonResult, str])
+@app.post("/v1/audio/transcriptions", response_model=Union[JsonResult, Any])
+@app.post("/v1/audio/translations", response_model=Union[JsonResult, Any])
 async def transcription(
     request: Request,
     file: UploadFile = File(...),
@@ -449,6 +448,10 @@ async def transcription(
         vad_options=vad_options,
     )
 
+    # Map the LiteLLM default to standard json
+    if response_format == "verbose_json":
+        response_format = "json"
+
     # special function for streaming response (OpenAI API does not have this)
     if response_format == "stream":
         return StreamingResponse(
@@ -468,7 +471,8 @@ async def transcription(
     elif response_format == "vtt":
         return StreamingResponse(vtt_writer(generator), media_type="text/plain")
 
-    raise HTTPException(400, "Invailed response_format")
+    # If it's still not caught, then it's actually invalid
+    raise HTTPException(400, "Invalid response_format")
 
 
 # for home assitant
