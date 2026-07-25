@@ -15,6 +15,7 @@ import io
 import hashlib
 import argparse
 import uvicorn
+import time
 from typing import (
     Annotated,
     Any,
@@ -389,6 +390,36 @@ async def translateapi(
         "status": 0,
         "hypotheses": [{"utterance": result}],
         "id": md5,
+    }
+
+@app.get("/v1/models")
+async def list_models():
+    """
+    OpenAI-compatible endpoint to list available models.
+    Many OpenAI clients require this endpoint to exist to validate the model.
+    """
+    return {
+        "object": "list",
+        "data": [
+            {
+                "id": f"whisper-{args.model}",  # The actual model loaded (e.g., "large-v3")
+                "object": "model",
+                "created": int(time.time()),
+                "owned_by": "konele",
+                "permission": [],
+                "root": f"whisper-{args.model}",
+                "parent": None,
+            },
+            {
+                "id": "whisper-1", # Added for strict OpenAI client compatibility
+                "object": "model",
+                "created": int(time.time()),
+                "owned_by": "openai",
+                "permission": [],
+                "root": "whisper-1",
+                "parent": None,
+            }
+        ]
     }
 
 @app.post("/v1/audio/transcriptions", response_model=Union[JsonResult, Any])
